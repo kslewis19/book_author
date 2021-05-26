@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 9000
+const port = 8000
 const cors = require('cors')
 require('dotenv').config()
 const API_KEY = process.env.REST_API_KEY
