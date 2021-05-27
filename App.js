@@ -12,20 +12,7 @@ app.use(cors())
 const accessTokenSecret = 'youraccesstokensecret';
 const userID = "bob"
 
-const authorData = {
-    "it": "stephan king"
-}
-const users = [
-    {
-        username: 'john',
-        password: 'password123admin',
-        role: 'admin'
-    }, {
-        username: 'anna',
-        password: 'password123member',
-        role: 'member'
-    }
-];
+
 const authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -96,8 +83,7 @@ app.post('/login', (req, res) => {
     // Read username and password from request body
     const { username, password } = req.body;
 
-    // Filter user from the users array by username and password
-    const user = users.find(u => { return u.username === username && u.password === password });
+
 
     if (user) {
         // Generate an access token
@@ -121,6 +107,14 @@ app.post('/book', (req, res) => {
     });
 
     //console.log(bookLibrary, ref.id)
+})
+app.post('/delete', (req, res) => {
+
+    const ref = db.collection('users').doc(userID);
+    const unionRes = ref.update({
+        library: admin.firestore.FieldValue.arrayRemove(req.body)
+    });
+    res.send('POST request to the homepage')
 })
 
 app.listen(port, () => {
