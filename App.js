@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 app.get('/book', (req, res) => {
-    const bookTitle = req.query.title
+    var bookTitle = req.query.title
 
 
     const fetchAuthor = () => {
@@ -23,15 +23,19 @@ app.get('/book', (req, res) => {
         const axios = require('axios');
         axios.get(url)
             .then(response => {
-                console.log(response.data);
-
+                console.log(response.data.items);
+                const author = response.data.items[0].volumeInfo.authors[0]
+                const books = response.data.items
+                if (author != null) {
+                    res.json({ author: author, books: books })
+                }
             }, error => {
                 console.log(error);
             });
 
     }
     fetchAuthor()
-    res.json({ author: authorData[bookTitle] })
+    //res.json({ author: authorData[bookTitle] })
 })
 
 app.listen(port, () => {
