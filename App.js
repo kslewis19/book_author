@@ -4,15 +4,19 @@ const port = 8000
 const cors = require('cors')
 require('dotenv').config()
 const API_KEY = process.env.REST_API_KEY
-
+app.use(express.json())
 app.use(cors())
 
 const authorData = {
     "it": "stephan king"
 }
+var bookLibrary = []
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
+})
+app.get('/library', (req, res) => {
+    res.json({ library: bookLibrary })
 })
 app.get('/book', (req, res) => {
     var bookTitle = req.query.title
@@ -36,6 +40,12 @@ app.get('/book', (req, res) => {
     }
     fetchAuthor()
     //res.json({ author: authorData[bookTitle] })
+})
+app.post('/book', (req, res) => {
+
+    res.send('POST request to the homepage')
+    bookLibrary.push(req.body)
+    console.log(bookLibrary)
 })
 
 app.listen(port, () => {
