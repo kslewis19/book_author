@@ -2,12 +2,15 @@ const express = require('express')
 const app = express()
 const port = 8000
 const cors = require('cors')
+const db = require('./firebase')
+const admin = require('firebase-admin');
 require('dotenv').config()
 const API_KEY = process.env.REST_API_KEY
 app.use(express.json())
 const jwt = require('jsonwebtoken');
 app.use(cors())
 const accessTokenSecret = 'youraccesstokensecret';
+const userID = "bob"
 
 const authorData = {
     "it": "stephan king"
@@ -46,8 +49,24 @@ var bookLibrary = []
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
-app.get('/library', authenticateJWT, (req, res) => {
-    res.json({ library: bookLibrary })
+app.get('/library', (req, res) => {
+
+    const ref = db.collection('users').doc(userID);
+    async function call() {
+        var doc = await ref.get();
+        if (!doc.exists) {
+            console.log('No such document!');
+        } else {
+            //console.log('Document data:', doc.data());
+            res.json({ library: doc.data().library })
+        }
+
+    }
+    call()
+
+
+
+
 })
 app.get('/book', (req, res) => {
     var bookTitle = req.query.title
@@ -58,7 +77,7 @@ app.get('/book', (req, res) => {
         const axios = require('axios');
         axios.get(url)
             .then(response => {
-                console.log(response.data.items);
+                //console.log(response.data.items);
                 const author = response.data.items[0].volumeInfo.authors[0]
                 const books = response.data.items
                 if (author != null) {
@@ -95,7 +114,13 @@ app.post('/book', (req, res) => {
 
     res.send('POST request to the homepage')
     bookLibrary.push(req.body)
-    console.log(bookLibrary)
+
+    const ref = db.collection('users').doc(userID);
+    const unionRes = ref.update({
+        library: admin.firestore.FieldValue.arrayUnion(req.body)
+    });
+
+    //console.log(bookLibrary, ref.id)
 })
 
 app.listen(port, () => {
