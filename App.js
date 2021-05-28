@@ -96,6 +96,22 @@ app.post('/login', (req, res) => {
         res.send('Username or password incorrect');
     }
 });
+app.post('/signup', (req, res) => {
+    // Read username and password from request body
+    const { username, password } = req.body;
+
+    // const user = await admin.auth().createUser({
+    //     password,
+    //     displayName: username,
+    // });
+
+    // ^gonna have to wrap in asyc function like in library
+
+    return res.send(user);
+
+
+});
+
 app.post('/book', (req, res) => {
 
     res.send('POST request to the homepage')
