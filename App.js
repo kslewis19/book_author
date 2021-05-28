@@ -116,6 +116,19 @@ app.post('/delete', (req, res) => {
     });
     res.send('POST request to the homepage')
 })
+app.post('/edit', (req, res) => {
+
+    const ref = db.collection('users').doc(userID);
+    const unionRes = ref.update({
+        library: admin.firestore.FieldValue.arrayRemove(req.body.old)
+    });
+    const unionRes2 = ref.update({
+        library: admin.firestore.FieldValue.arrayUnion(req.body.new)
+    });
+    res.send('POST request to the homepage')
+})
+
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
